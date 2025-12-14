@@ -1,0 +1,32 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.sortMembers": "explicit"
+  },
+  // Enable suggestions and accept via Tab/inline where applicable
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  // Tab completion for snippets and suggestions
+  "editor.tabCompletion": "on",
+  // Inline suggestions (useful for AI or word-based ghost text)
+  "editor.inlineSuggest.enabled": true,
+  // Better function call completions
+  "typescript.suggest.completeFunctionCalls": true,
+  "javascript.suggest.completeFunctionCalls": true,
+  // Emmet with Tab (useful in TSX/HTML)
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  // Show snippets inline with other suggestions
+  "editor.snippetSuggestions": "inline",
+  "editor.suggest.showSnippets": true,
+  // Prevent Copilot from hijacking Tab
+  "github.copilot.enableTabKeyForCompletions": false
+}
