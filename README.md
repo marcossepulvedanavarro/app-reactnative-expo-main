@@ -1,5 +1,5 @@
 📱 Evaluación 3 – App Expo + Backend (Todo App)
-Equipo
+Equipo compuesto por:
 
 Christian Madrid Cano  —  Desarrollo de la app
 
