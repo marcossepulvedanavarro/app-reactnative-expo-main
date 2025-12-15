@@ -1,64 +1,106 @@
-import { StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native'
+import {
+    ActivityIndicator,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ViewStyle,
+} from "react-native";
+
+
+const COLORS = {
+  primary: "#1e88e5", 
+  danger: "#e53935",
+};
 
 interface ButtonProps {
-    type?: 'primary' | 'outline' | 'success' | 'danger' | 'warning';
-    text: string;
-    onPress?: () => void;
-    style?: StyleProp<ViewStyle>
-    disabled?: boolean;
-    loading?: boolean;
+  type?: "primary" | "outline" | "danger";
+  text: string;
+  onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 export default function Button({
-    type = 'primary',
-    text,
-    onPress,
-    style,
-    disabled = false,
-    loading = false,
+  type = "primary",
+  text,
+  onPress,
+  style,
+  disabled = false,
+  loading = false,
 }: ButtonProps) {
-    return (
-        <TouchableOpacity style={[styles.button, styles[type], style, (disabled || loading) && styles.disabled]} onPress={onPress} disabled={disabled || loading}>
-            <Text style={[styles.buttonText, type === 'outline' && styles.buttonTextOutline]}>
-                {loading ? 'Cargando...' : text}
-            </Text>
-        </TouchableOpacity>
-    )
+  const isDisabled = disabled || loading;
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.base,
+        styles[type],
+        isDisabled && styles.disabled,
+        style,
+      ]}
+      onPress={onPress}
+      disabled={isDisabled}
+      activeOpacity={0.85}
+    >
+      {loading ? (
+        <ActivityIndicator
+          color={type === "outline" ? COLORS.primary : "#fff"}
+        />
+      ) : (
+        <Text
+          style={[
+            styles.text,
+            type === "outline" && styles.textOutline,
+          ]}
+        >
+          {text}
+        </Text>
+      )}
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: '#007AFF',
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-    },  
-    primary: {
-        backgroundColor: '#1ceb49ff',
-    },
-    outline: {
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: '#1ceb49ff',
-    },
-    success: {
-        backgroundColor: '#28a745',
-    },
-    danger: {
-        backgroundColor: '#dc3545',
-    },
-    warning: {
-        backgroundColor: '#ffc107',
-    },  
-    buttonText: {
-        color: '#ffffff',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    buttonTextOutline: {
-        color: '#1ceb49ff',
-    },
-    disabled: {
-        opacity: 0.6,
-    },
-})
+  
+  base: {
+    height: 48,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+  },
+
+  /* Variantes */
+  primary: {
+    backgroundColor: COLORS.primary,
+  },
+
+  outline: {
+    backgroundColor: "transparent",
+    borderWidth: 1.5,
+    borderColor: COLORS.primary,
+  },
+
+  danger: {
+    backgroundColor: COLORS.danger,
+  },
+
+  /* Texto */
+  text: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+
+  textOutline: {
+    color: COLORS.primary,
+  },
+
+  /* Estados */
+  disabled: {
+    opacity: 0.6,
+  },
+});
+

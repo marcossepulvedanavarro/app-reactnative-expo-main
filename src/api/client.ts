@@ -7,7 +7,7 @@ if (!API_URL) {
 }
 
 type ApiOptions = Omit<RequestInit, "headers"> & {
-  auth?: boolean; 
+  auth?: boolean;
   headers?: Record<string, string>;
 };
 
@@ -34,11 +34,22 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const { auth = true, headers, ...rest } = options;
 
-  const finalHeaders = await buildHeaders(headers, auth);
+  
+  const isFormData =
+    typeof FormData !== "undefined" && rest.body instanceof FormData;
+
+  const cleanHeaders: Record<string, string> = { ...(headers ?? {}) };
+
+  if (isFormData) {
+    delete cleanHeaders["Content-Type"];
+    delete cleanHeaders["content-type"];
+  }
+
+  const finalHeaders = await buildHeaders(cleanHeaders, auth);
 
   const res = await fetch(`${API_URL}${path}`, {
     ...rest,
-    headers: finalHeaders, 
+    headers: finalHeaders,
   });
 
   if (!res.ok) {
@@ -58,4 +69,5 @@ export async function apiFetch<T>(
 
   return (await res.json()) as T;
 }
+
 

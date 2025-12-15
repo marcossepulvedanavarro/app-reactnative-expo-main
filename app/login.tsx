@@ -17,7 +17,6 @@ export default function LoginScreen() {
     try {
       await login(email.trim(), password);
 
-      // ✅ IMPORTANTE: ir a las rutas protegidas
       router.replace('/(tabs)');
     } catch (e: any) {
       setErr(e?.message ?? 'Error al iniciar sesión');
@@ -29,7 +28,9 @@ export default function LoginScreen() {
   return (
     <View style={styles.c}>
       <Text style={styles.title}>Iniciar sesión</Text>
+
       {!!err && <Text style={styles.err}>{err}</Text>}
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -38,6 +39,7 @@ export default function LoginScreen() {
         value={email}
         onChangeText={setEmail}
       />
+
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
@@ -45,15 +47,46 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
       />
-      <Button title={loading ? 'Ingresando...' : 'Ingresar'} onPress={onSubmit} disabled={loading} />
+
+      <Button
+        title={loading ? 'Ingresando...' : 'Ingresar'}
+        onPress={onSubmit}
+        disabled={loading}
+      />
+
+      {/* 🔹 BOTÓN REGISTRO */}
+      <Button
+        title="Crear cuenta"
+        onPress={() => router.push('/register')}
+        disabled={loading}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  c: { flex: 1, justifyContent: 'center', padding: 24, gap: 12 },
-  title: { fontSize: 22, fontWeight: '600', marginBottom: 8, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12 },
-  err: { color: 'crimson', textAlign: 'center' },
+  c: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+    gap: 12,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+  },
+  err: {
+    color: 'crimson',
+    textAlign: 'center',
+  },
 });
+
 
