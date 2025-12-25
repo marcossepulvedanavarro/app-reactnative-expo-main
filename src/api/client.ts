@@ -1,10 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
-if (!API_URL) {
-  throw new Error("EXPO_PUBLIC_API_URL no está definido. Revisa tu .env.local");
-}
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "https://todo-list.dobleb.cl";
 
 type ApiOptions = Omit<RequestInit, "headers"> & {
   auth?: boolean;
@@ -28,46 +24,61 @@ async function buildHeaders(
   return base;
 }
 
-export async function apiFetch<T>(
-  path: string,
-  options: ApiOptions = {}
-): Promise<T> {
+export async function apiFetch<T>(path: string, options: ApiOptions = {}): Promise<T> {
   const { auth = true, headers, ...rest } = options;
 
-  
-  const isFormData =
-    typeof FormData !== "undefined" && rest.body instanceof FormData;
-
-  const cleanHeaders: Record<string, string> = { ...(headers ?? {}) };
-
-  if (isFormData) {
-    delete cleanHeaders["Content-Type"];
-    delete cleanHeaders["content-type"];
+  const cleanHeaders: Record<string, string> = {};
+  if (headers) {
+    for (const [k, v] of Object.entries(headers)) {
+      if (v != null) cleanHeaders[k] = v;
+    }
   }
 
   const finalHeaders = await buildHeaders(cleanHeaders, auth);
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const url = `${API_URL}${path}`;
+  const token = auth ? await AsyncStorage.getItem("@token") : null;
+
+console.log("[apiFetch] ->", {
+  url,
+  method: rest?.method ?? "GET",
+  hasToken: !!token,
+  tokenLen: token?.length ?? 0,
+});
+
+  const res = await fetch(url, {
     ...rest,
     headers: finalHeaders,
   });
 
+ 
+  const text = await res.text().catch(() => "");
+
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
+    
+    console.log("[apiFetch] ERROR", res.status, url, text);
+
+    
     try {
-      const parsed = JSON.parse(text);
-      throw new Error(parsed?.message ?? `Error API (${res.status})`);
+      const parsed = text ? JSON.parse(text) : null;
+      throw new Error(parsed?.message ?? parsed?.error ?? `Error API (${res.status})`);
     } catch {
       throw new Error(text || `Error API (${res.status})`);
     }
   }
 
+  
+  if (!text) return undefined as T;
+
+
   const contentType = res.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) {
-    return undefined as T;
+  if (contentType.includes("application/json")) {
+    return JSON.parse(text) as T;
   }
 
-  return (await res.json()) as T;
+  
+  return text as unknown as T;
 }
+
 
 

@@ -10,18 +10,25 @@ export type Todo = {
   updatedAt?: string;
 };
 
+
+type ApiResponse<T> = { data: T };
+
 export function getTodoService() {
   return {
-    list: () => apiFetch<Todo[]>("/todos"),
 
-    create: (payload: {
+    list: async () => {
+      const resp = await apiFetch<ApiResponse<Todo[]>>("/todos");
+      return resp.data;
+    },
+
+    create: async (payload: {
       title: string;
       completed?: boolean;
       latitude?: number;
       longitude?: number;
       photoUri?: string;
-    }) =>
-      apiFetch<Todo>("/todos", {
+    }) => {
+      const resp = await apiFetch<ApiResponse<Todo>>("/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -33,9 +40,12 @@ export function getTodoService() {
               : undefined,
           photoUri: payload.photoUri ?? undefined,
         }),
-      }),
+      });
 
-    patch: (
+      return resp.data;
+    },
+
+    patch: async (
       id: string,
       payload: Partial<{
         title: string;
@@ -44,8 +54,8 @@ export function getTodoService() {
         longitude: number;
         photoUri: string;
       }>
-    ) =>
-      apiFetch<Todo>(`/todos/${id}`, {
+    ) => {
+      const resp = await apiFetch<ApiResponse<Todo>>(`/todos/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -56,7 +66,10 @@ export function getTodoService() {
             : {}),
           ...(payload.photoUri != null ? { photoUri: payload.photoUri } : {}),
         }),
-      }),
+      });
+
+      return resp.data;
+    },
 
     remove: (id: string) =>
       apiFetch<void>(`/todos/${id}`, {
@@ -64,5 +77,7 @@ export function getTodoService() {
       }),
   };
 }
+
+
 
 

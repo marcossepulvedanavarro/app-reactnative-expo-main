@@ -1,5 +1,4 @@
-import { getTodoService, Todo } from "@/services/todo-service";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -15,45 +14,41 @@ import {
 import NewTask from "@/components/new-task";
 import Button from "@/components/ui/button";
 
-function normalizeTodos(resp: any): Todo[] {
-  if (Array.isArray(resp)) return resp;
-  if (Array.isArray(resp?.data)) return resp.data;
-  return [];
-}
+import { buildTodosApi } from "@/hooks/todos-api";
+import { Todo, useTodos } from "@/hooks/useTodos";
 
 export default function TodosScreen() {
-  const todoService = getTodoService();
 
-  const [items, setItems] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
+  const api = useMemo(() => buildTodosApi(), []);
+
+
+  const {
+    todos,
+    loading,
+    error,
+    clearError,
+    fetchTodos,
+    toggleTodo,
+    deleteTodo,
+  } = useTodos({ api });
+
+
   const [showNewTask, setShowNewTask] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  const load = async () => {
-    setErr(null);
-    setLoading(true);
-    try {
-      const resp = await todoService.list();
-      setItems(normalizeTodos(resp));
-    } catch (e: any) {
-      setErr(e?.message ?? "No se pudieron cargar las tareas");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    load();
-  }, []);
+    if (!error) return;
+    Alert.alert("Error", error, [{ text: "OK", onPress: clearError }]);
+  }, [error, clearError]);
 
   const toggleCompleted = async (todo: Todo) => {
     if (busyId) return;
     setBusyId(todo.id);
 
     try {
-      await todoService.patch(todo.id, { completed: !todo.completed });
-      await load();
+      await toggleTodo(todo.id);
+ 
     } catch (e: any) {
       Alert.alert("Error", e?.message ?? "No se pudo actualizar la tarea");
     } finally {
@@ -72,8 +67,8 @@ export default function TodosScreen() {
           setBusyId(todo.id);
 
           try {
-            await todoService.remove(todo.id);
-            await load();
+            await deleteTodo(todo.id);
+          
           } catch (e: any) {
             Alert.alert("Error", e?.message ?? "No se pudo eliminar la tarea");
           } finally {
@@ -84,7 +79,7 @@ export default function TodosScreen() {
     ]);
   };
 
-  if (loading) {
+  if (loading && todos.length === 0) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
@@ -95,19 +90,17 @@ export default function TodosScreen() {
 
   return (
     <View style={styles.container}>
-      {!!err && <Text style={styles.err}>{err}</Text>}
+      
 
-      <Button
-        text="Nueva tarea"
-        onPress={() => setShowNewTask(true)}
-        type="primary"
-      />
+      <Button text="Nueva tarea" onPress={() => setShowNewTask(true)} type="primary" />
 
       <FlatList
-        data={items}
+        data={todos}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<Text style={styles.muted}>No hay tareas aún.</Text>}
         contentContainerStyle={{ gap: 10, paddingTop: 10 }}
+        onRefresh={fetchTodos}
+        refreshing={loading && todos.length > 0}
         renderItem={({ item }) => {
           const isBusy = busyId === item.id;
 
@@ -122,24 +115,19 @@ export default function TodosScreen() {
                   {item.completed ? "✅ " : "⬜ "} {item.title}
                 </Text>
 
-                {item.location?.latitude != null &&
-                item.location?.longitude != null ? (
+                {item.location?.latitude != null && item.location?.longitude != null ? (
                   <Text style={styles.meta}>
                     📍 {item.location.latitude}, {item.location.longitude}
                   </Text>
                 ) : null}
 
                 {item.photoUri ? (
-                  <Image
-                    source={{ uri: item.photoUri }}
-                    style={styles.todoImage}
-                  />
+                  <Image source={{ uri: item.photoUri }} style={styles.todoImage} />
                 ) : null}
 
                 {isBusy ? <Text style={styles.meta}>Procesando...</Text> : null}
               </View>
 
-              {/* ✅ Botón eliminar: MISMO AZUL, MÁS PEQUEÑO */}
               <View style={styles.actions}>
                 <Button
                   type="outline"
@@ -156,7 +144,14 @@ export default function TodosScreen() {
 
       <Modal visible={showNewTask} animationType="slide">
         <View style={styles.modal}>
-          <NewTask onClose={() => setShowNewTask(false)} onSaved={load} />
+         
+          <NewTask
+            onClose={() => setShowNewTask(false)}
+            onSaved={async () => {
+              setShowNewTask(false);
+              await fetchTodos();
+            }}
+          />
         </View>
       </Modal>
     </View>
@@ -192,19 +187,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
- 
   actions: {
-    width: 96, 
+    width: 96,
     justifyContent: "center",
   },
 
   deleteBtn: {
-    height: 36, 
+    height: 36,
     borderRadius: 8,
   },
 
   modal: { flex: 1, padding: 16 },
 });
+
 
 
 
