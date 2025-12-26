@@ -15,8 +15,8 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Bienvenido {user?.name}</Text>
-      <Text>Hola {user?.name}</Text>
+      <Text style={styles.headerText}>Bienvenido {user?.email}</Text>
+      <Text>Hola {user?.email}</Text>
       <Pressable style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
       </Pressable>
