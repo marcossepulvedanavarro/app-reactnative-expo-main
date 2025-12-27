@@ -1,4 +1,4 @@
-📱 Evaluación 3 – App Expo + Backend (Todo App)
+Examen – App Expo + Backend (Todo App)
 👥 Equipo
 
 Christian Madrid Cano — Desarrollo de la app
