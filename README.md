@@ -1,4 +1,4 @@
-Examen – App Expo + Backend (Todo App)
+📱 Examen final – App Expo + Backend (Todo App)
 👥 Equipo
 
 Christian Madrid Cano — Desarrollo de la app
@@ -10,11 +10,11 @@ Nota: Se utilizaron herramientas de IA como apoyo al estudio, documentación, re
 📌 Descripción general
 
 Aplicación móvil desarrollada con React Native, Expo y TypeScript, utilizando Expo Router para el enrutamiento.
-La app implementa autenticación contra un backend real, persistencia de sesión, CRUD completo de tareas asociado al usuario autenticado, subida de imágenes a Cloudflare R2 y un uso intensivo de hooks de React, cumpliendo los requisitos de la Evaluación 3.
+La app implementa autenticación contra un backend real, persistencia de sesión, CRUD completo de tareas asociado al usuario autenticado, subida de imágenes a Cloudflare R2 y un uso intensivo de hooks de React, cumpliendo los requisitos del Examen final.
 
 El backend expone una API REST documentada con Swagger.
 
-🚀 Funcionalidades implementadas (Evaluación 3)
+🚀 Funcionalidades implementadas (Examen Final)
 🔐 Autenticación
 
 Registro de usuarios (POST /auth/register)
@@ -179,4 +179,4 @@ EXPO_PUBLIC_API_URL=https://todo-list.dobleb.cl
 
 📌 Observaciones finales
 
-Este proyecto cumple con los requerimientos solicitados en la Evaluación 3, integrando frontend y backend de manera completa, aplicando hooks de React, buenas prácticas de desarrollo móvil y consumo de APIs REST.
+Este proyecto cumple con los requerimientos solicitados en el examen final, integrando frontend y backend de manera completa, aplicando hooks de React, buenas prácticas de desarrollo móvil y consumo de APIs REST.
