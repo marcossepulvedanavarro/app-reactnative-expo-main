@@ -1,16 +1,16 @@
 📱 Evaluación 3 – App Expo + Backend (Todo App)
-Equipo
+👥 Equipo
 
 Christian Madrid Cano — Desarrollo de la app
 
 Marcos Sepúlveda Navarro — Desarrollo de la app
 
-Nota: Se utilizaron herramientas de IA como apoyo al estudio, documentación, refactorización de código y para resolución de errores de compatibilidad de versiones SDK.
+Nota: Se utilizaron herramientas de IA como apoyo al estudio, documentación, refactorización de código y resolución de errores de compatibilidad de versiones SDK.
 
 📌 Descripción general
 
 Aplicación móvil desarrollada con React Native, Expo y TypeScript, utilizando Expo Router para el enrutamiento.
-La app implementa autenticación contra un backend real, persistencia de sesión, CRUD completo de tareas asociado al usuario autenticado y subida de imágenes a Cloudflare R2, cumpliendo los requisitos de la Evaluación 3.
+La app implementa autenticación contra un backend real, persistencia de sesión, CRUD completo de tareas asociado al usuario autenticado, subida de imágenes a Cloudflare R2 y un uso intensivo de hooks de React, cumpliendo los requisitos de la Evaluación 3.
 
 El backend expone una API REST documentada con Swagger.
 
@@ -61,6 +61,57 @@ Almacenamiento de latitud y longitud
 
 Visualización de coordenadas en la lista
 
+⚛️ Uso de Hooks en React (Evaluación 3)
+
+La aplicación hace uso de hooks estándar y custom hooks, permitiendo una correcta gestión del estado, efectos secundarios y reutilización de lógica.
+
+🔹 Hooks estándar utilizados
+
+useState
+Manejo de estado local, por ejemplo:
+
+lista de tareas
+
+estados de carga (loading)
+
+mensajes de error
+
+visibilidad de modales
+
+useEffect
+Ejecución de efectos secundarios, como:
+
+carga inicial de tareas desde el backend
+
+sincronización de datos al montar componentes
+
+useContext
+Uso del contexto de autenticación para compartir el estado del usuario y token en toda la aplicación sin prop drilling.
+
+🔹 Custom Hooks
+
+Se implementan custom hooks para encapsular lógica de negocio y desacoplarla de la UI, siguiendo buenas prácticas de React.
+
+Ejemplo conceptual:
+
+Centralización de la lógica del Todo List:
+
+obtención de tareas
+
+actualización de estado
+
+manejo de errores
+
+interacción con la API REST
+
+Gracias a esto:
+
+Los componentes se enfocan en renderizar la UI
+
+La lógica es reutilizable y mantenible
+
+El código es más limpio y escalable
+
 🎨 UI / UX
 
 Estilos unificados en toda la aplicación
@@ -108,6 +159,8 @@ Crear archivo .env.local en la raíz del proyecto:
 EXPO_PUBLIC_API_URL=https://todo-list.dobleb.cl
 
 
+⚠️ Este archivo no debe subirse al repositorio.
+
 🧠 Cumplimiento Evaluación 3
 
 ✔ Autenticación contra backend
@@ -117,15 +170,13 @@ EXPO_PUBLIC_API_URL=https://todo-list.dobleb.cl
 ✔ Subida de imágenes
 ✔ Uso de variables de entorno
 ✔ Manejo de errores
+✔ Uso de hooks estándar y custom hooks
 ✔ UI consistente
 
 🎥 Video demostrativo
 
+👉 https://www.youtube.com/watch?v=mbJIy9RBRkI
 
 📌 Observaciones finales
 
-Este proyecto cumple con los requerimientos solicitados en la Evaluación 3, integrando frontend y backend de manera completa, siguiendo buenas prácticas de desarrollo móvil y consumo de APIs REST.
-
-## 🎥 Video demostrativo
-
-[Ver en YouTube] https://www.youtube.com/shorts/c9QUMCw7RzA
+Este proyecto cumple con los requerimientos solicitados en la Evaluación 3, integrando frontend y backend de manera completa, aplicando hooks de React, buenas prácticas de desarrollo móvil y consumo de APIs REST.
